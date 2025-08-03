@@ -109,5 +109,42 @@ namespace Net.Pkcs11Admin
             DigestInfo digestInfo = new DigestInfo(algorithmIdentifier, hash);
             return digestInfo.GetDerEncoded();
         }
+
+        /// <summary>
+        /// Converts a byte array to a hexadecimal string representation.
+        /// </summary>
+        /// <param name="data">The byte array to convert.</param>
+        /// <returns>A hexadecimal string representation of the byte array.</returns>
+        public static string ByteArrayToHexString(byte[] data)
+        {
+            if (data == null) throw new ArgumentNullException("data");
+
+            StringBuilder sb = new StringBuilder(data.Length * 2);
+            foreach (byte b in data)
+            {
+                sb.Append(b.ToString("X2"));
+            }
+            return sb.ToString();
+        }
+
+        /// <summary>
+        /// Converts a hexadecimal string to a byte array.
+        /// </summary>
+        /// <param name="hexString">The hexadecimal string to convert.</param>
+        /// <returns>A byte array representation of the hexadecimal string.</returns>
+        /// <exception cref="FormatException">Thrown when the input string contains non-hexadecimal characters or has odd length.</exception>
+        public static byte[] HexStringToByteArray(string hexString)
+        {
+            if (hexString == null) throw new ArgumentNullException("hexString");
+            if (hexString.Length % 2 != 0) throw new FormatException("Hex string must have an even number of characters");
+
+            byte[] bytes = new byte[hexString.Length / 2];
+            for (int i = 0; i < bytes.Length; i++)
+            {
+                string byteString = hexString.Substring(i * 2, 2);
+                bytes[i] = Convert.ToByte(byteString, 16);
+            }
+            return bytes;
+        }
     }
 }
